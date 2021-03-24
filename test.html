@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Movie Recommendation Engine</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="vendor/custom.css">
+
+
+
+</head>
+
+<body>
+
+<script src="vendor/jquery.min.js"></script>
+<script src="vendor/vue.js"></script>
+<script src="vendor/vue-ratings.js"></script>
+  
+<script src="vendor/axios.min.js"></script>
+<script src="vendor/loadash.js"></script>
+  
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>	
+
+<script type="text/javascript">
+	var app = new Vue({
+	  el: '#app',
+	  data: {
+		all_movies:[],
+		search:"",
+		ratings:{},
+		recommendations:[]
+	  },
+	  
+	  components:{
+		StarRating: VueStarRating.default
+	  },
+	  
+	});
+  </script>
+
+<script type="text/javascript">
+	var app = new Vue({
+	  created: function(){
+		console.log("here")
+		var self=this;
+  
+		$.getJSON('movies.json', function (data) {
+		  self.all_movies = data
+		});
+	  },
+	  
+	});
+  </script>
+
+</body>
+
+</html>
