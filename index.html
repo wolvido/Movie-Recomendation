@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
+  <!-- Bootstrap core JavaScript -->
+  <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
+  <script src="vendor/jquery.min.js"></script>
+  <script src="vendor/vue.js"></script>
+  <script src="vendor/vue-ratings.js"></script>
+
+
+  <script src="vendor/axios.min.js"></script>
+  <script src="vendor/loadash.js"></script>
+
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 <head>
 
   <meta charset="utf-8">
@@ -21,7 +33,7 @@
 <body>
   
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bgdark static-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary static-top">
     <div class="container">
       <a class="navbar-brand" href="#">Movie Recommendation Engine</a>
       
@@ -43,11 +55,31 @@
   <div class="container" style="max-width: 1200px;">
 
     <div class="row">
+      
       <div class="col-lg-12 text-center">
           
       <div style="min-width: 310px; margin: 20px auto">
-      
-        <input  v-model="search" type="text" class="form-control" placeholder="Search Movies..." style="border-radius:0.25em; font-size: 24px;">
+
+        <button type="button" onclick="displayGenre()" class="btn btn-primary"Primary>Search by Genre </button>
+        <button type="button" onclick="displayTitle()" class="btn btn-primary"Primary>search by Title </button>
+        <script>
+          function displayTitle() {
+            var x = document.getElementById("title");
+            var y = document.getElementById("genre");
+              x.style.display = "block";
+              y.style.display = "none"; 
+          }
+
+          function displayGenre() {
+            var x = document.getElementById("title");
+            var y = document.getElementById("genre");
+              x.style.display = "none";
+              y.style.display = "block"; 
+          }
+          </script>
+
+        <input v-model="search" style="display:block" type="text" id="title" class="form-control" placeholder="Search Movies..." style="border-radius:0.25em; font-size: 50px;">
+        <input  v-model="search" id="genre"  style="display:none" type="text" class="form-control" placeholder="Search Genre..." style="border-radius:0.25em; font-size: 50px;">
 
         <div> 
 
@@ -58,19 +90,51 @@
                    <h4 style="text-align: left; color: black;">{{item["title"]}}</h4> 
                 </td>
                 <td style="text-align: right;">
-                  <!-- <span v-on:click="addrating(item,1)" class="rating-circle">1</span>
-                  <span v-on:click="addrating(item,2)" class="rating-circle">2</span>
-                  <span v-on:click="addrating(item,3)" class="rating-circle">3</span>
-                  <span v-on:click="addrating(item,4)" class="rating-circle">4</span>
-                  <span v-on:click="addrating(item,5)" class="rating-circle">5</span> -->
-
-                  <star-rating  :show-rating="false" @rating-selected="addrating($event,item)"></star-rating>
+                  <span v-on:click="addrating(1,item)" class="rating-circle">1</span>
+                  <span v-on:click="addrating(2,item)" class="rating-circle">2</span>
+                  <span v-on:click="addrating(3,item)" class="rating-circle">3</span>
+                  <span v-on:click="addrating(4,item)" class="rating-circle">4</span>
+                  <span v-on:click="addrating(5,item)" class="rating-circle">5</span>
                   
                 </td>
               </tr>
             </table>
 
           </div>
+
+
+        </div> 
+
+      </div>
+
+      <!-- //// -->
+
+      <div style="min-width: 310px; margin: 20px auto">
+      
+        
+
+        <div> 
+
+          <div  v-for="item in searchGenre" style="border:1px solid #ced4da; padding: 10px;">
+            <table width="100%;">
+              <tr>
+                <td>
+                   <h4 style="text-align: left; color: black;">{{item["title"]}}</h4> 
+                </td>
+                <td style="text-align: right;">
+                  <span v-on:click="addrating(1,item)" class="rating-circle">1</span>
+                  <span v-on:click="addrating(2,item)" class="rating-circle">2</span>
+                  <span v-on:click="addrating(3,item)" class="rating-circle">3</span>
+                  <span v-on:click="addrating(4,item)" class="rating-circle">4</span>
+                  <span v-on:click="addrating(5,item)" class="rating-circle">5</span>
+                  
+                </td>
+              </tr>
+            </table>
+
+          </div>
+
+          
 
         
 
@@ -79,7 +143,8 @@
 
       </div>
 
-    
+      <!--  -->
+
       </div>
     </div>
 
@@ -131,17 +196,7 @@
   </div> <!-- App -->
 </div>
 
-  <!-- Bootstrap core JavaScript -->
-  <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
-  <script src="vendor/jquery.min.js"></script>
-  <script src="vendor/vue.js"></script>
-  <script src="vendor/vue-ratings.js"></script>
 
-
-  <script src="vendor/axios.min.js"></script>
-  <script src="vendor/loadash.js"></script>
-
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
   <script type="text/javascript">
@@ -178,12 +233,14 @@
              
           addrating: function(rating,item){
             id = item["movieId"]
+            console.log(item)
             item["rating"] = rating
             Vue.set(this.ratings,id,item)
             this.search = ""
             this.getrecommendations()
 
           },
+
           removemovie: function(movie){
 
             id = movie["movieId"]
@@ -206,7 +263,7 @@
 
                     recommendation = response.data
 
-                     console.log(recommendation)
+                    //  console.log(recommendation)
 
                     _.forEach(recommendation,function(movie_title){
 
@@ -230,6 +287,7 @@
 
 
         },
+
       computed:{
               searchResults(){
 
@@ -253,16 +311,39 @@
                if(result.length > 100){
                 
                 result = result.slice(0,100)
-               
+          
                } 
-
-
                return result
+               },
 
-               }
-      }    
-    
+               searchGenre(){
 
+                if(this.search.length < 2){
+                  return []
+                }
+                all_movies = (this.all_movies || [])
+                self = this;
+
+                result = all_movies.filter(item => {
+                    movie_name = item["genres"]
+                    pos = movie_name.toString().toLowerCase().indexOf(self.search.toLowerCase())
+                    if (pos > -1){
+                        return -1
+                    }else{
+                      return 0;
+                    }
+
+                    });    
+
+                if(result.length > 100){
+
+                result = result.slice(0,100)
+
+                } 
+                return result
+                }
+      }
+          
     });         
 
   </script>
